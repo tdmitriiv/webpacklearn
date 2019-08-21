@@ -1,13 +1,15 @@
 const path = require('path')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   entry: "./src/index.js",
   output: {
     filename: "bundle.js",
     path: path.resolve(__dirname, "./dist"),
-    publicPath: "dist/"
+    publicPath: ""
   },
-  mode: "none",
+  mode: 'development',
   module: {
     rules: [
       {
@@ -41,7 +43,26 @@ module.exports = {
             plugins: ['transform-class-properties']
           }
         }
+      },
+      {
+        test: /\.hbs$/,
+        use: {
+          loader: 'handlebars-loader'
+        }
       }
     ]
-  }
+  },
+  plugins: [
+    new CleanWebpackPlugin({
+      cleanOnceBeforeBuildPatterns: [
+        '**/*',
+        path.join(process.cwd(), 'build/**/*') //clear another folder
+      ]
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Hello world',
+      description: 'Some description',
+      template: 'src/index.hbs'
+    })
+  ]
 }
